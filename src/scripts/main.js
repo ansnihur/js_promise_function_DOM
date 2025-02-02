@@ -1,14 +1,28 @@
 'use strict';
 
 function waitFor(element, eventName) {
-  return new Promise((resolve) => {
-    element.addEventListener(eventName, function handler(_event) {
+  return new Promise((resolve, reject) => {
+    if (!element) {
+      reject(new Error('There is no element!'));
+
+      return;
+    }
+
+    if (typeof eventName !== 'string') {
+      reject(new Error('The type of event is incrorrect.'));
+
+      return;
+    }
+
+    function handler(_event) {
       element.removeEventListener(eventName, handler);
 
       resolve(
         `It was ${eventName} on the element: ${element.nodeName}, id: ${element.id}`,
       );
-    });
+    }
+
+    element.addEventListener(eventName, handler);
   });
 }
 
